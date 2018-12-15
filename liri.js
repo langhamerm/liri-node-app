@@ -8,21 +8,20 @@ var Spotify = require('node-spotify-api');
 var bandsintown = require('bandsintown');
 //creates log.txt file
 var filename = './log.txt';
-//NPM module used to write output to console and log.txt simulatneously
+//node logger
 var log = require('simple-node-logger').createSimpleFileLogger(filename);
 log.setLevel('all');
 
-//argv[2] chooses users actions; argv[3] is input parameter, ie; movie title
+//save user input as variable
 var userCommand = process.argv[2];
 var secondCommand = process.argv[3];
-// Fetch Spotify Keys
+//spotify key grab
 var spotify = new Spotify(keys.spotify);
-// Writes to the log.txt file
 var getArtistNames = function (artist) {
     return artist.name;
 };
 
-// Function for running a Spotify search - Command is spotify-this-song
+// SPOTIFY
 var getSpotify = function (songName) {
     if (songName === undefined) {
         songName = "The Sign";
@@ -52,10 +51,10 @@ var getSpotify = function (songName) {
         }
     );
 };
-//Switch command
+//switch command
 function mySwitch(userCommand) {
 
-    //choose which statement (userCommand) to switch to and execute
+    //user options for command line
     switch (userCommand) {
 
         case "concert-this":
@@ -75,7 +74,7 @@ function mySwitch(userCommand) {
             break;
     }
 };
-//BIT Concerts: concert- this
+//BANDS IN TOWN
 function getConcerts() {
     var artist = secondCommand;
     var bitUrl = "https://rest.bandsintown.com/artists/" + artist + "/events?app_id=codingbootcamp";
@@ -105,20 +104,19 @@ function getConcerts() {
         }
     });
 }
-//OMDB Movie - command: movie-this
+//OMDB
 function getMovie() {
-    // OMDB Movie - this MOVIE base code is from class files, I have modified for more data and assigned parse.body to a Var
     var movieName = secondCommand;
-    // Then run a request to the OMDB API with the movie specified
+    // API request
     var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&tomatoes=true&apikey=trilogy";
 
     request(queryUrl, function (error, response, body) {
 
-        // If the request is successful = 200
+        
         if (!error && response.statusCode === 200) {
             var body = JSON.parse(body);
 
-            //Simultaneously output to console and log.txt via NPM simple-node-logger
+            
             console.log('================ Movie Info ================');
             console.log("Title: " + body.Title);
             console.log("Release Year: " + body.Year);
@@ -135,7 +133,7 @@ function getMovie() {
             //else - throw error
             console.log("Error occurred.")
         }
-        //Response if user does not type in a movie title
+        //if user does not type in a movie title
         if (movieName === "Mr. Nobody") {
             console.log("-----------------------");
             console.log("If you haven't watched 'Mr. Nobody,' then you should: http://www.imdb.com/title/tt0485947/");
@@ -143,11 +141,8 @@ function getMovie() {
         }
     });
 }
-
-//Function for command do-what-it-says; reads and splits random.txt file
-//command: do-what-it-says
+//do-what-it-says
 function doWhat() {
-    //Read random.txt file
     fs.readFile("random.txt", "utf8", function (error, data) {
         if (!error);
         console.log(data.toString());
